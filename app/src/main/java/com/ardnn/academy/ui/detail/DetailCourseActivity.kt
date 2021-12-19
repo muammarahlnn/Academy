@@ -9,34 +9,21 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.ardnn.academy.R
 import com.ardnn.academy.databinding.ActivityDetailCourseBinding
+import com.ardnn.academy.databinding.ContentDetailCourseBinding
 
 class DetailCourseActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityDetailCourseBinding
+    private lateinit var detailContentBinding: ContentDetailCourseBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityDetailCourseBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        val activityDetailCourseBinding = ActivityDetailCourseBinding.inflate(layoutInflater)
+        detailContentBinding = activityDetailCourseBinding.detailContent
+        setContentView(activityDetailCourseBinding.root)
 
+        setSupportActionBar(activityDetailCourseBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val navController = findNavController(R.id.nav_host_fragment_content_detail_course)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_detail_course)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
 }
