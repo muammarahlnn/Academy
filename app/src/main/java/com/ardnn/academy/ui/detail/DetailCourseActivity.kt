@@ -1,17 +1,24 @@
 package com.ardnn.academy.ui.detail
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ardnn.academy.R
+import com.ardnn.academy.data.CourseEntity
 import com.ardnn.academy.databinding.ActivityDetailCourseBinding
 import com.ardnn.academy.databinding.ContentDetailCourseBinding
+import com.ardnn.academy.ui.reader.CourseReaderActivity
+import com.ardnn.academy.utils.DataDummy
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 
 class DetailCourseActivity : AppCompatActivity() {
+    companion object {
+        const val EXTRA_COURSE = "extra_course"
+    }
 
     private lateinit var detailContentBinding: ContentDetailCourseBinding
 
@@ -24,6 +31,50 @@ class DetailCourseActivity : AppCompatActivity() {
 
         setSupportActionBar(activityDetailCourseBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val adapter = DetailCourseAdapter()
+        val extras = intent.extras
+        if (extras != null) {
+            val courseId = extras.getString(EXTRA_COURSE)
+            if (courseId != null) {
+                val modules = DataDummy.generateDummyModules(courseId)
+                adapter.setModules(modules)
+                for (course in DataDummy.generateDummyCourses()) {
+                    if (course.courseId == courseId) {
+                        populateCourse(course)
+                    }
+                }
+            }
+        }
+
+        with(detailContentBinding.rvModule) {
+            isNestedScrollingEnabled = false
+            layoutManager = LinearLayoutManager(this@DetailCourseActivity)
+            setHasFixedSize(true)
+            this.adapter = adapter
+
+            val dividerItemDecoration = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
+            addItemDecoration(dividerItemDecoration)
+        }
+    }
+
+    private fun populateCourse(course: CourseEntity) {
+        detailContentBinding.textTitle.text = course.title
+        detailContentBinding.textDescription.text = course.description
+        detailContentBinding.textDate.text = resources.getString(R.string.deadline_date, course.deadline)
+
+        Glide.with(this@DetailCourseActivity)
+            .load(course.imagePath)
+            .transform(RoundedCorners(20))
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_loading)
+                .error(R.drawable.ic_error))
+            .into(detailContentBinding.imagePoster)
+
+        detailContentBinding.btnStart.setOnClickListener {
+            val toCourseReader = Intent(this@DetailCourseActivity, CourseReaderActivity::class.java)
+            toCourseReader.putExtra(CourseReaderActivity.EXTRA_COURSE_ID, course.courseId)
+            startActivity(toCourseReader)
+        }
     }
 
 }
