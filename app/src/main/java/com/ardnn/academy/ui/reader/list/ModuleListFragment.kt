@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ardnn.academy.data.ModuleEntity
 import com.ardnn.academy.databinding.FragmentModuleListBinding
 import com.ardnn.academy.ui.reader.CourseReaderActivity
 import com.ardnn.academy.ui.reader.CourseReaderCallback
+import com.ardnn.academy.ui.reader.CourseReaderViewModel
 import com.ardnn.academy.utils.DataDummy
 
 class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener {
@@ -23,6 +25,7 @@ class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener 
             ModuleListFragment()
     }
 
+    private lateinit var viewModel: CourseReaderViewModel
     private lateinit var fragmentModuleListBinding: FragmentModuleListBinding
     private lateinit var adapter: ModuleListAdapter
     private lateinit var courseReaderCallback: CourseReaderCallback
@@ -38,8 +41,10 @@ class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
         adapter = ModuleListAdapter(this)
-        populateRecyclerView(DataDummy.generateDummyModules("a47"))
+        populateRecyclerView(viewModel.getModules())
     }
 
     override fun onAttach(context: Context) {
@@ -49,6 +54,7 @@ class ModuleListFragment : Fragment(), ModuleListAdapter.MyAdapterClickListener 
 
     override fun onItemClicked(position: Int, moduleId: String) {
         courseReaderCallback.moveTo(position, moduleId)
+        viewModel.setSelectedModule(moduleId)
     }
 
     private fun populateRecyclerView(modules: List<ModuleEntity>) {
