@@ -49,8 +49,7 @@ class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
     override fun onShareClick(course: CourseEntity) {
         if (activity != null) {
             val mimeType = "text/plain"
-            ShareCompat.IntentBuilder
-                .from(requireActivity())
+            ShareCompat.IntentBuilder(requireActivity())
                 .setText(mimeType)
                 .setChooserTitle("Bagikan aplikasi ini sekarang.")
                 .setText(resources.getString(R.string.share_text, course.title))
