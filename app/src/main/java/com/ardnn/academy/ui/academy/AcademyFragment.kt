@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ardnn.academy.R
 import com.ardnn.academy.databinding.FragmentAcademyBinding
-import com.ardnn.academy.utils.DataDummy
 import com.ardnn.academy.viewmodel.ViewModelFactory
 
 class AcademyFragment : Fragment() {
@@ -31,7 +29,7 @@ class AcademyFragment : Fragment() {
         if (activity != null) {
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(this, factory)[AcademyViewModel::class.java]
-            val courses = viewModel.getCourse()
+            val courses = viewModel.getCourses()
 
             // initialize adapter
             val academyAdapter = AcademyAdapter()
