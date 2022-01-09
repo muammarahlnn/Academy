@@ -1,4 +1,4 @@
-package com.ardnn.academy.data
+package com.ardnn.academy.data.source.local.entity
 
 data class ModuleEntity(
     var moduleId: String,

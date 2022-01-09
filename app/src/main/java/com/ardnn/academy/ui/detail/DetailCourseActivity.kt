@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ardnn.academy.R
-import com.ardnn.academy.data.CourseEntity
+import com.ardnn.academy.data.source.local.entity.CourseEntity
 import com.ardnn.academy.databinding.ActivityDetailCourseBinding
 import com.ardnn.academy.databinding.ContentDetailCourseBinding
 import com.ardnn.academy.ui.reader.CourseReaderActivity
-import com.ardnn.academy.utils.DataDummy
+import com.ardnn.academy.viewmodel.ViewModelFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -33,7 +33,8 @@ class DetailCourseActivity : AppCompatActivity() {
         setSupportActionBar(activityDetailCourseBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[DetailCourseViewModel::class.java]
+        val factory = ViewModelFactory.getInstance(this)
+        val viewModel = ViewModelProvider(this, factory)[DetailCourseViewModel::class.java]
 
         val adapter = DetailCourseAdapter()
         val extras = intent.extras

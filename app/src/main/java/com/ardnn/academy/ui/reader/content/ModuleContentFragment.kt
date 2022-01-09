@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.ardnn.academy.R
-import com.ardnn.academy.data.ContentEntity
-import com.ardnn.academy.data.ModuleEntity
+import com.ardnn.academy.data.source.local.entity.ModuleEntity
 import com.ardnn.academy.databinding.FragmentModuleContentBinding
 import com.ardnn.academy.ui.reader.CourseReaderViewModel
+import com.ardnn.academy.viewmodel.ViewModelFactory
 
 class ModuleContentFragment : Fragment() {
 
@@ -35,7 +34,8 @@ class ModuleContentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
+            val factory = ViewModelFactory.getInstance(requireActivity())
+            val viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
             val module = viewModel.getSelectedModule()
             populateWebView(module)
         }

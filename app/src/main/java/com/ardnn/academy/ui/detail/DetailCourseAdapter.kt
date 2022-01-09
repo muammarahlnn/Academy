@@ -3,7 +3,7 @@ package com.ardnn.academy.ui.detail
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ardnn.academy.data.ModuleEntity
+import com.ardnn.academy.data.source.local.entity.ModuleEntity
 import com.ardnn.academy.databinding.ItemsModuleListBinding
 
 class DetailCourseAdapter : RecyclerView.Adapter<DetailCourseAdapter.ModuleViewHolder>() {

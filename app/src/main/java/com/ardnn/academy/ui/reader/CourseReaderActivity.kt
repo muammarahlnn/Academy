@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.ardnn.academy.R
 import com.ardnn.academy.ui.reader.content.ModuleContentFragment
 import com.ardnn.academy.ui.reader.list.ModuleListFragment
+import com.ardnn.academy.viewmodel.ViewModelFactory
 
 class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
     companion object {
@@ -15,7 +16,8 @@ class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_reader)
 
-        val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
+        val factory = ViewModelFactory.getInstance(this)
+        val viewModel = ViewModelProvider(this, factory)[CourseReaderViewModel::class.java]
         val bundle = intent.extras
         if (bundle != null) {
             val courseId = bundle.getString(EXTRA_COURSE_ID)

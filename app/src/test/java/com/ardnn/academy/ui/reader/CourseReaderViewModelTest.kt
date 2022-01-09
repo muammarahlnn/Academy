@@ -1,6 +1,6 @@
 package com.ardnn.academy.ui.reader
 
-import com.ardnn.academy.data.ContentEntity
+import com.ardnn.academy.data.source.local.entity.ContentEntity
 import com.ardnn.academy.utils.DataDummy
 import org.junit.Assert.*
 import org.junit.Before

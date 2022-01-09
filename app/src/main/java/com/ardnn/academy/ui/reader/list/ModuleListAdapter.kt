@@ -3,7 +3,7 @@ package com.ardnn.academy.ui.reader.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ardnn.academy.data.ModuleEntity
+import com.ardnn.academy.data.source.local.entity.ModuleEntity
 import com.ardnn.academy.databinding.ItemsModuleListCustomBinding
 
 class ModuleListAdapter internal constructor(

@@ -9,9 +9,9 @@ import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ardnn.academy.R
-import com.ardnn.academy.data.CourseEntity
+import com.ardnn.academy.data.source.local.entity.CourseEntity
 import com.ardnn.academy.databinding.FragmentBookmarkBinding
-import com.ardnn.academy.utils.DataDummy
+import com.ardnn.academy.viewmodel.ViewModelFactory
 
 class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
 
@@ -30,7 +30,8 @@ class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
-            val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[BookmarkViewModel::class.java]
+            val factory = ViewModelFactory.getInstance(requireActivity())
+            val viewModel = ViewModelProvider(this, factory)[BookmarkViewModel::class.java]
             val courses = viewModel.getBookmarks()
 
             // initialize adapter
