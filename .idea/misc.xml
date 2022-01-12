@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/coding/github/Academy/app/src/main/res/layout/activity_course_reader.xml" value="0.259375" />
+        <entry key="..\:/coding/github/Academy/app/src/main/res/layout/activity_detail_course.xml" value="0.259375" />
+        <entry key="..\:/coding/github/Academy/app/src/main/res/layout/content_detail_course.xml" value="0.259375" />
+        <entry key="..\:/coding/github/Academy/app/src/main/res/layout/fragment_academy.xml" value="0.259375" />
+        <entry key="..\:/coding/github/Academy/app/src/main/res/layout/fragment_bookmark.xml" value="0.259375" />
+        <entry key="..\:/coding/github/Academy/app/src/main/res/layout/fragment_module_content.xml" value="0.259375" />
         <entry key="app/src/main/res/drawable/bg_button.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/drawable/bg_button_disable.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/drawable/ic_bookmark_selector.xml" value="0.1" />

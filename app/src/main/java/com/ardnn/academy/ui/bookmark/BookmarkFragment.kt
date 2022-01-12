@@ -32,11 +32,16 @@ class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
         if (activity != null) {
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(this, factory)[BookmarkViewModel::class.java]
-            val courses = viewModel.getBookmarks()
 
             // initialize adapter
             val adapter = BookmarkAdapter(this)
-            adapter.setCourses(courses)
+
+            fragmentBookmarkBinding.progressBar.visibility = View.VISIBLE
+            viewModel.getBookmarks().observe(viewLifecycleOwner, { bookmarks ->
+                fragmentBookmarkBinding.progressBar.visibility = View.GONE
+                adapter.setCourses(bookmarks)
+                adapter.notifyDataSetChanged()
+            })
 
             // set recyclerview
             with (fragmentBookmarkBinding.rvBookmark) {
