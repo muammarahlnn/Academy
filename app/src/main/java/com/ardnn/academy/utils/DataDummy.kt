@@ -1,6 +1,8 @@
 package com.ardnn.academy.utils
 
+import com.ardnn.academy.data.source.local.entity.ContentEntity
 import com.ardnn.academy.data.source.local.entity.CourseEntity
+import com.ardnn.academy.data.source.local.entity.CourseWithModule
 import com.ardnn.academy.data.source.local.entity.ModuleEntity
 import com.ardnn.academy.data.source.remote.response.ContentResponse
 import com.ardnn.academy.data.source.remote.response.CourseResponse
@@ -245,7 +247,22 @@ object DataDummy {
         )
         return modules
     }
-    fun generateRemoteDummyContent(moduleId: String): ContentResponse {
-        return ContentResponse(moduleId, "This is a dummy content")
+
+
+    fun generateRemoteDummyContent(moduleId: String): ContentResponse =
+        ContentResponse(moduleId, "This is a dummy content")
+
+    fun generateDummyCourseWithModules(course: CourseEntity, bookmarked: Boolean): CourseWithModule {
+        course.bookmarked = bookmarked
+        return CourseWithModule(course, generateDummyModules(course.courseId))
+    }
+
+    fun generateDummyContent(moduleId: String): ContentEntity =
+        ContentEntity("This is a dummy content")
+
+    fun generateDummyModuleWithContent(courseId: String): ModuleEntity {
+        val moduleEntity = generateDummyModules(courseId)[0]
+        moduleEntity.contentEntity = generateDummyContent(moduleEntity.moduleId)
+        return moduleEntity
     }
 }
