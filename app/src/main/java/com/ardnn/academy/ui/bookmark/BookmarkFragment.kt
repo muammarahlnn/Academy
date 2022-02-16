@@ -7,60 +7,82 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ardnn.academy.R
 import com.ardnn.academy.data.source.local.entity.CourseEntity
 import com.ardnn.academy.databinding.FragmentBookmarkBinding
 import com.ardnn.academy.viewmodel.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
 
-    lateinit var fragmentBookmarkBinding: FragmentBookmarkBinding
+    private var _fragmentBookmarkBinding: FragmentBookmarkBinding? = null
+    private val binding get() = _fragmentBookmarkBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    private lateinit var viewModel: BookmarkViewModel
+    private lateinit var adapter: BookmarkAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        fragmentBookmarkBinding= FragmentBookmarkBinding.inflate(layoutInflater, container, false)
-        return fragmentBookmarkBinding.root
+        _fragmentBookmarkBinding = FragmentBookmarkBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        itemTouchHelper.attachToRecyclerView(binding?.rvBookmark)
 
         if (activity != null) {
             val factory = ViewModelFactory.getInstance(requireActivity())
-            val viewModel = ViewModelProvider(this, factory)[BookmarkViewModel::class.java]
+            viewModel = ViewModelProvider(this, factory)[BookmarkViewModel::class.java]
 
-            // initialize adapter
-            val adapter = BookmarkAdapter(this)
-
-            fragmentBookmarkBinding.progressBar.visibility = View.VISIBLE
-            viewModel.getBookmarks().observe(viewLifecycleOwner, { bookmarks ->
-                fragmentBookmarkBinding.progressBar.visibility = View.GONE
-                adapter.setCourses(bookmarks)
-                adapter.notifyDataSetChanged()
+            adapter = BookmarkAdapter(this)
+            binding?.progressBar?.visibility = View.VISIBLE
+            viewModel.getBookmarks().observe(this, { courses ->
+                binding?.progressBar?.visibility = View.GONE
+                adapter.submitList(courses)
             })
 
-            // set recyclerview
-            with (fragmentBookmarkBinding.rvBookmark) {
-                layoutManager = LinearLayoutManager(context)
-                this.adapter = adapter
-                setHasFixedSize(true)
-            }
+            binding?.rvBookmark?.layoutManager = LinearLayoutManager(context)
+            binding?.rvBookmark?.setHasFixedSize(true)
+            binding?.rvBookmark?.adapter = adapter
         }
     }
 
     override fun onShareClick(course: CourseEntity) {
         if (activity != null) {
             val mimeType = "text/plain"
-            ShareCompat.IntentBuilder(requireActivity())
-                .setText(mimeType)
+            ShareCompat.IntentBuilder
+                .from(requireActivity())
+                .setType(mimeType)
                 .setChooserTitle("Bagikan aplikasi ini sekarang.")
-                .setText(resources.getString(R.string.share_text, course.title))
+                .setText("Segera daftar kelas ${course.title} di dicoding.com")
                 .startChooser()
         }
     }
 
+    private val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int =
+            makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean = true
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            if (view != null) {
+                val swipedPosition = viewHolder.adapterPosition
+                val courseEntity = adapter.getSwipedData(swipedPosition)
+                courseEntity?.let { viewModel.setBookmark(it) }
+
+                val snackbar = Snackbar.make(view as View, R.string.message_undo, Snackbar.LENGTH_LONG)
+                snackbar.setAction(R.string.message_ok) { v ->
+                    courseEntity?.let { viewModel.setBookmark(it) }
+                }
+                snackbar.show()
+            }
+        }
+    })
 }
+

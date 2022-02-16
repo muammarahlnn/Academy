@@ -1,6 +1,7 @@
 package com.ardnn.academy.data.source.local
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import com.ardnn.academy.data.source.local.entity.CourseEntity
 import com.ardnn.academy.data.source.local.entity.CourseWithModule
 import com.ardnn.academy.data.source.local.entity.ModuleEntity
@@ -9,18 +10,19 @@ import com.ardnn.academy.data.source.local.room.AcademyDao
 class LocalDataSource private constructor(
     private val mAcademyDao: AcademyDao
 ) {
-
     companion object {
         private var INSTANCE: LocalDataSource? = null
 
         fun getInstance(academyDao: AcademyDao): LocalDataSource =
-            INSTANCE ?: LocalDataSource(academyDao)
+            INSTANCE ?: LocalDataSource(academyDao).apply {
+                INSTANCE = this
+            }
+
     }
 
-    fun getAllCourses(): LiveData<List<CourseEntity>> =
-        mAcademyDao.getCourses()
+    fun getAllCourses(): DataSource.Factory<Int, CourseEntity> = mAcademyDao.getCourses()
 
-    fun getBookmarkedCourses(): LiveData<List<CourseEntity>> =
+    fun getBookmarkedCourses(): DataSource.Factory<Int, CourseEntity> =
         mAcademyDao.getBookmarkedCourse()
 
     fun getCourseWithModules(courseId: String): LiveData<CourseWithModule> =
@@ -29,11 +31,13 @@ class LocalDataSource private constructor(
     fun getAllModulesByCourse(courseId: String): LiveData<List<ModuleEntity>> =
         mAcademyDao.getModulesByCourseId(courseId)
 
-    fun insertCourses(courses: List<CourseEntity>) =
+    fun insertCourses(courses: List<CourseEntity>) {
         mAcademyDao.insertCourses(courses)
+    }
 
-    fun insertModules(modules: List<ModuleEntity>) =
+    fun insertModules(modules: List<ModuleEntity>) {
         mAcademyDao.insertModules(modules)
+    }
 
     fun setCourseBookmark(course: CourseEntity, newState: Boolean) {
         course.bookmarked = newState

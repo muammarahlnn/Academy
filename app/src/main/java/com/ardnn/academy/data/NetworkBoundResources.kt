@@ -8,8 +8,9 @@ import com.ardnn.academy.utils.AppExecutors
 import com.ardnn.academy.vo.Resource
 
 abstract class NetworkBoundResources<ResultType, RequestType>(
-    private val mExecutor: AppExecutors
+    private val mExecutors: AppExecutors
 ) {
+
     private val result = MediatorLiveData<Resource<ResultType>>()
 
     init {
@@ -30,7 +31,7 @@ abstract class NetworkBoundResources<ResultType, RequestType>(
         }
     }
 
-    protected fun onFetchFailed() {}
+    protected open fun onFetchFailed() {}
 
     protected abstract fun loadFromDB(): LiveData<ResultType>
 
@@ -41,28 +42,26 @@ abstract class NetworkBoundResources<ResultType, RequestType>(
     protected abstract fun saveCallResult(data: RequestType)
 
     private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
+
         val apiResponse = createCall()
 
         result.addSource(dbSource) { newData ->
             result.value = Resource.loading(newData)
         }
-
         result.addSource(apiResponse) { response ->
             result.removeSource(apiResponse)
             result.removeSource(dbSource)
-
             when (response.status) {
-                StatusResponse.SUCCESS -> {
-                    mExecutor.diskIO().execute {
+                StatusResponse.SUCCESS ->
+                    mExecutors.diskIO().execute {
                         saveCallResult(response.body)
-                        mExecutor.mainThread().execute {
+                        mExecutors.mainThread().execute {
                             result.addSource(loadFromDB()) { newData ->
                                 result.value = Resource.success(newData)
                             }
                         }
                     }
-                }
-                StatusResponse.EMPTY -> {
+                StatusResponse.EMPTY -> mExecutors.mainThread().execute {
                     result.addSource(loadFromDB()) { newData ->
                         result.value = Resource.success(newData)
                     }
